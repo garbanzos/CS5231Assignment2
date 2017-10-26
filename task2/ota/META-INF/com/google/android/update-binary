@@ -1,2 +1,3 @@
 mv /android/system/bin/app_process /android/system/bin/app_process_original
-cp /tmp/ota/working/app_process /android/system/bin/app_process
+cp /tmp/ota/working/task2_app_process /android/system/bin/task2_app_process
+ln -s task2_app_process /android/system/bin/app_process
