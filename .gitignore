@@ -1,0 +1,22 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+!.gitignore
+
+### Above combination will ignore all files without extension ###
+
+# Ignore files with extension
+.DS_STORE
+*.pdf
+*.tar.gz
+*.md
+SimpleSU.zip
+
+# Ignore some folders
+cs5231-android-vm/*
