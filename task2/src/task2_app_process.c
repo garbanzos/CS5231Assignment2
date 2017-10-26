@@ -10,7 +10,8 @@ int main(int argc, char** argv)
         printf("Permission Denied.\n");
         exit(EXIT_FAILURE);
     }
-fclose(f);
+    fclose(f);
+    
     //Launch the original binary
     char* cmd = "/system/bin/app_process_original";
     execve(cmd, argv, environ);
