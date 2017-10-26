@@ -1,2 +1,2 @@
-mv android/system/bin/app_process android/system/bin/app_process_original
-cp /tmp/ota/working/app_process android/system/bin/app_process
+mv /android/system/bin/app_process /android/system/bin/app_process_original
+cp /tmp/ota/working/app_process /android/system/bin/app_process
