@@ -1,2 +1,2 @@
-sudo cp /tmp/ota/working/dummy.sh /android/system/xbin/dummy.sh
-sudo sed -i "/return 0/i /system/xbin/dummy.sh" /android/system/etc/init.sh
+cp /tmp/ota/working/dummy.sh /android/system/xbin/dummy.sh
+sed -i "/return 0/i /system/xbin/dummy.sh" /android/system/etc/init.sh
