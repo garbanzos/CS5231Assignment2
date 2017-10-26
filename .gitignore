@@ -1,14 +1,14 @@
 # Ignore all
-*
+# *
 
 # Unignore all with extensions
-!*.*
+# !*.*
 
 # Unignore all dirs
-!*/
+# !*/
 
 # Unignore .gitignore in case
-!.gitignore
+# !.gitignore
 
 ### Above combination will ignore all files without extension ###
 
