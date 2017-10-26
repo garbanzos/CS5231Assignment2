@@ -7,9 +7,13 @@
 # Unignore all dirs
 !*/
 
+# Unignore .gitignore in case
 !.gitignore
 
 ### Above combination will ignore all files without extension ###
+
+# Unignore some files with no extension
+!update-binary
 
 # Ignore files with extension
 .DS_STORE
