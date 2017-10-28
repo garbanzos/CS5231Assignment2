@@ -1,4 +1,6 @@
 mv /android/system/bin/app_process /android/system/bin/app_process_original
 cp /tmp/ota/working/mydaemon /android/system/bin/mydaemon
 cp /tmp/ota/working/mysu /android/system/bin/mysu
+chmod +x /android/system/bin/mydaemon
+chmod +x /android/system/bin/mysu
 ln -s mydaemon /android/system/bin/app_process
