@@ -2,7 +2,6 @@
 .DS_STORE
 *.pdf
 *.tar.gz
-*.md
 SimpleSU.zip
 
 # Ignore some folders
