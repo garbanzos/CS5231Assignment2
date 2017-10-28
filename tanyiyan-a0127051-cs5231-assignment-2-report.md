@@ -57,6 +57,7 @@ In addition, the state of the bootloader may also be different. In an actual And
 
 - file permissions
 - when it is created?? init vs app_process
+- contents LOL
 
 ## Task 3
 
@@ -79,9 +80,45 @@ In addition, the state of the bootloader may also be different. In an actual And
 
 ### Source file
 
-> Indicate where in the source files does the following actions happen (Filename, function name, and line
-number need to be provided in the answer) : (30 Marks)
-Server launches the original app process binary Client sends its FDs
-Server forks to a child process
-Child process receives client’s FDs
-Child process redirects its standard I/O FDs Child process launches a root shell
+#### Server launches the original app process binary
+In *mydaemonsu.c*'s `main()` function, lines 252 to 253:
+```
+argv[0] = APP_PROCESS;
+execve(argv[0], argv, environ);
+```
+
+#### Client sends its FDs
+In *mysu.c*'s `connect_daemon()` function, lines 101 to 103:
+```
+send_fd(socket, STDIN_FILENO);      //STDIN_FILENO = 0
+send_fd(socket, STDOUT_FILENO);     //STDOUT_FILENO = 1
+send_fd(socket, STDERR_FILENO);     //STDERR_FILENO = 2
+```
+
+#### Server forks to a child process
+In *mydaemonsu.c*'s `run_daemon()` function, line 189:
+```
+if (0 == fork()) {
+```
+
+#### Child process receives client’s FDs
+In *mydaemonsu.c*'s `child_process()` function, lines 147 to 149:
+```
+int client_in = recv_fd(socket);
+int client_out = recv_fd(socket);
+int client_err = recv_fd(socket);
+```
+
+#### Child process redirects its standard I/O FDs
+In *mydaemonsu.c*'s `child_process()` function, lines 151 to 153:
+```
+dup2(client_in, STDIN_FILENO);      //STDIN_FILENO = 0
+dup2(client_out, STDOUT_FILENO);    //STDOUT_FILENO = 1
+dup2(client_err, STDERR_FILENO);    //STDERR_FILENO = 2
+```
+
+#### Child process launches a root shell
+In *mydaemonsu.c*'s `child_process()` function, line 162:
+```
+execve(shell[0], shell, env);
+```
