@@ -21,20 +21,23 @@ In addition, the state of the bootloader may also be different. In an actual And
 
 > Identify which component in the signature verification process is problematic and explain why is it so. (10 Marks)
 
+https://source.android.com/devices/tech/ota/sign_builds
+
+> Update packages received from the main system are typically verified twice: once by the main system, using the RecoverySystem.verifyPackage() method in the android API, and then again by recovery. The RecoverySystem API checks the signature against public keys stored in the main system, in the file /system/etc/security/otacerts.zip (by default). Recovery checks the signature against public keys stored in the recovery partition RAM disk, in the file /res/keys.
+
+one of the checks not working?
+scp?
+
 ### Verifying our custom OTA file
 
 > Show and explain how the OTA update service can be made to verify our custom ota file.
 
 ### Structure of OTA file
 
-> **NOTE: may change after doing signature verification.** Show the structure of OTA file.
-
 ![](task1.3_ota_file_structure.png)
 *Figure 1. Structure of OTA file in task 1*
 
 ### Dummy file within the Android system
-
-> Show that the dummy file is created within the Android system.
 
 ![](task1.4_dummy_file.png)
 *Figure 2. dummy file created within Android system for task 1*
@@ -42,8 +45,6 @@ In addition, the state of the bootloader may also be different. In an actual And
 ## Task 2
 
 ### Structure of OTA file
-
-> **NOTE: may change after doing signature verification.** Show the structure of OTA file.
 
 ![](task2.1_ota_file_structure.png)
 *Figure 3. Structure of OTA file in task 2*
@@ -53,24 +54,26 @@ In addition, the state of the bootloader may also be different. In an actual And
 ![](task2.2_dummy2_file.png)
 *Figure 4. dummy2 file created within Android system for task 2*
 
-### Differences between the dummy files are created in Task 1 and 2
+### Differences between the dummy files created in Task 1 and 2
 
-- file permissions
-- when it is created?? init vs app_process
-- contents LOL
+One difference between the dummy files created in Task 1 and 2 is when they are created. In task 1, the `dummy` file is created when the file `/system/etc/init.sh` is executed. In the `init.sh`, a command to run `dummy.sh` was added by me (via the OTA's update-binary using `sed`) and when this command to run `dummy.sh` is executed, the `dummy` file is created. On the other hand, the `dummy2` file is created when my wrapper program for `app_process` is executed (when the Android OS bootstraps its runtime). The wrapper program creates the `dummy2` file and then invokes the original `app_process` (which was renamed to `app_process_original`).
+
+Another difference between the dummy files is their permissions. For `dummy` that is created in task 1, the permissions is `-rw-rw-rw-`, as seen in Figure 2. In contrast, the permissions for `dummy2` in task 2 is `-rw-------`.  
+
+In addition, one trivial difference between the dummy files is their contents. `dummy` in task 1 contains "hello" whereas `dummy2` in task 2 is an empty file. 
 
 ## Task 3
 
 ### The root shell
 
-> Show that root shell can be obtained.
+After starting the client program `mysu`, the root shell is obtained. This can be seen in Figure 5. below.  
 
 ![](task3.1_root_shell.png)
 *Figure 5. The root shell obtained in task 3*
 
 ### File descriptors of the client and shell processes
 
-> Show that the client and shell processes share the same file descriptors.
+Figure 6. and Figure 7. shows the `/proc/<PID>/fd` of the client and the shell processes respectively. As seen in the figures, all the file descriptors point to `/dev/pts/0`.  
 
 ![](task3.2_client_fd.png)
 *Figure 6. File descriptors of client process*
