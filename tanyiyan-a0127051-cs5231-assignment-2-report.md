@@ -19,67 +19,72 @@ In addition, the state of the bootloader may also be different. In an actual And
 
 ### Problematic component of signature verification process
 
-> Identify which component in the signature verification process is problematic and explain why is it so. (10 Marks)
+Usually in an actual Android device, the OTA update package is verified twice before installing the package:
+1. The OTA package is verified by the main system using the `RecoverySystem.verifyPackage()` method in the Android API. This method checks the signature of the OTA package against the public keys stored in the main system, in the file `/system/etc/security/otacerts.zip`.
+2. The OTA package is verified by the recovery OS. The recovery OS checks the signature of the OTA package against the public keys stored in the recovery partition RAM disk, in the file `/res/keys`.
 
-https://source.android.com/devices/tech/ota/sign_builds
-
-> Update packages received from the main system are typically verified twice: once by the main system, using the RecoverySystem.verifyPackage() method in the android API, and then again by recovery. The RecoverySystem API checks the signature against public keys stored in the main system, in the file /system/etc/security/otacerts.zip (by default). Recovery checks the signature against public keys stored in the recovery partition RAM disk, in the file /res/keys.
-
-one of the checks not working?
-scp?
+On our Android VM, it seems that OTA package was not checked twice. The recovery did not check the signature of my OTA package against the public keys stored in `/res/keys`. As a result, in order to make the Android VM accept my OTA package signed with my private key, it suffices to change the `/system/etc/security/otacerts.zip` in the main system to include my public key.
 
 ### Verifying our custom OTA file
 
-> Show and explain how the OTA update service can be made to verify our custom ota file.
+In order to make the OTA update service accept my custom OTA file, I generated my own set of public and private keys using `openssl` and signed my OTA package using `signapk.jar` that was provided in the Android VM. Next, I created a `otacerts.zip` file that contains my public key. Then, I replaced the `/system/etc/security/otacerts.zip` in the main Android system with the `otacerts.zip` that I created using `scp.` It seems that `scp` has excessive privileges on the Android OS as it is able to copy files into `/android/system/etc/security/` directory that can only be written to by a process with root privileges, as seen in Figure 1.
+
+![](task1.2_scp_otacerts.png)
+*Figure 1. scp my otacerts.zip into the android/system/etc/security/ into Android VM*
+
+Finally, I copied my signed OTA package into the recovery OS and flashed my OTA package using the recovery program. As seen in Figure 2., the signature verification succeeded. After rebooting my Android VM, the `dummy` file is found n the `\system` directory (Shown in Figure. 4).
+
+![](task1.2_signature_verified.png)
+*Figure 2. Signature verification of my ota package succeeded*
 
 ### Structure of OTA file
 
 ![](task1.3_ota_file_structure.png)
-*Figure 1. Structure of OTA file in task 1*
+*Figure 3. Structure of OTA file in task 1*
 
 ### Dummy file within the Android system
 
 ![](task1.4_dummy_file.png)
-*Figure 2. dummy file created within Android system for task 1*
+*Figure 4. dummy file created within Android system for task 1*
 
 ## Task 2
 
 ### Structure of OTA file
 
 ![](task2.1_ota_file_structure.png)
-*Figure 3. Structure of OTA file in task 2*
+*Figure 5. Structure of OTA file in task 2*
 
 ### Dummy file within the Android system
 
 ![](task2.2_dummy2_file.png)
-*Figure 4. dummy2 file created within Android system for task 2*
+*Figure 6. dummy2 file created within Android system for task 2*
 
 ### Differences between the dummy files created in Task 1 and 2
 
 One difference between the dummy files created in Task 1 and 2 is when they are created. In task 1, the `dummy` file is created when the file `/system/etc/init.sh` is executed. In the `init.sh`, a command to run `dummy.sh` was added by me (via the OTA's update-binary using `sed`) and when this command to run `dummy.sh` is executed, the `dummy` file is created. On the other hand, the `dummy2` file is created when my wrapper program for `app_process` is executed (when the Android OS bootstraps its runtime). The wrapper program creates the `dummy2` file and then invokes the original `app_process` (which was renamed to `app_process_original`).
 
-Another difference between the dummy files is their permissions. For `dummy` that is created in task 1, the permissions is `-rw-rw-rw-`, as seen in Figure 2. In contrast, the permissions for `dummy2` in task 2 is `-rw-------`.  
+Another difference between the dummy files is their permissions. For `dummy` that is created in task 1, the permissions is `-rw-rw-rw-`, as seen in Figure 4. In contrast, the permissions for `dummy2` in task 2 is `-rw-------`, as seen in Figure 6.
 
-In addition, one trivial difference between the dummy files is their contents. `dummy` in task 1 contains "hello" whereas `dummy2` in task 2 is an empty file. 
+In addition, one trivial difference between the dummy files is their contents. `dummy` in task 1 contains "hello" whereas `dummy2` in task 2 is an empty file.
 
 ## Task 3
 
 ### The root shell
 
-After starting the client program `mysu`, the root shell is obtained. This can be seen in Figure 5. below.  
+After starting the client program `mysu`, the root shell is obtained. This can be seen in Figure 7. below.  
 
 ![](task3.1_root_shell.png)
-*Figure 5. The root shell obtained in task 3*
+*Figure 7. The root shell obtained in task 3*
 
 ### File descriptors of the client and shell processes
 
-Figure 6. and Figure 7. shows the `/proc/<PID>/fd` of the client and the shell processes respectively. As seen in the figures, all the file descriptors point to `/dev/pts/0`.  
+Figure 8. and Figure 9. shows the `/proc/<PID>/fd` of the client and the shell processes respectively. As seen in the figures, all the file descriptors point to `/dev/pts/0`.  
 
 ![](task3.2_client_fd.png)
-*Figure 6. File descriptors of client process*
+*Figure 8. File descriptors of client process*
 
 ![](task3.2_shell_fd.png)
-*Figure 7. File descriptors of shell process*
+*Figure 9. File descriptors of shell process*
 
 ### Source file
 
