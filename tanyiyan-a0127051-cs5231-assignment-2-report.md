@@ -31,15 +31,15 @@ In order to make the OTA update service accept my custom OTA file, I generated m
 ![](task1.2_scp_otacerts.png)
 *Figure 1. scp my otacerts.zip into the android/system/etc/security/ on the Android VM*
 
-Finally, I copied my signed OTA package into the recovery OS and flashed my OTA package using the recovery program. As seen in Figure 2., the signature verification succeeded. After rebooting my Android VM, the `dummy` file is found n the `\system` directory (Shown in Figure. 4).
+Finally, I copied my signed OTA package into the recovery OS and flashed my OTA package using the recovery program. As seen in Figure 2., the signature verification succeeded. After rebooting my Android VM, the `dummy` file is found in the `/system` directory (Shown in Figure. 4).
 
 ![](task1.2_signature_verified.png)
 *Figure 2. Signature verification of my ota package succeeded*
 
-The `otacerts.zip` that I created can be found at `a0127051u\code\otacerts.zip`.
+The `otacerts.zip` that I created can be found at `a0127051u/code/otacerts.zip`.
 
 ### Structure of OTA file
-Figure 3. below shows the structure of the OTA file I created for task 1. The OTA package can be found at `a0127051u\code\task1\ota\ota.zip`.
+Figure 3. below shows the structure of the OTA file I created for task 1. The OTA package can be found at `a0127051u/code/task1/ota/ota.zip`.
 
 ![](task1.3_ota_file_structure.png)
 *Figure 3. Structure of OTA file in task 1*
@@ -52,7 +52,7 @@ Figure 3. below shows the structure of the OTA file I created for task 1. The OT
 ## Task 2
 
 ### Structure of OTA file
-Figure 5. on the next page shows the structure of the OTA file I created for task 2. The OTA package can be found at `a0127051u\code\task2\ota\ota.zip`.
+Figure 5. on the next page shows the structure of the OTA file I created for task 2. The OTA package can be found at `a0127051u/code/task2/ota/ota.zip`.
 
 ![](task2.1_ota_file_structure.png)
 *Figure 5. Structure of OTA file in task 2*
@@ -74,7 +74,7 @@ In addition, one trivial difference between the dummy files is their contents. `
 
 ### The root shell
 
-After starting the client program `mysu`, the root shell is obtained. This can be seen in Figure 7. below. The OTA package I created for task 3 can be found at `a0127051u\code\task3\ota\ota.zip`.
+After starting the client program `mysu`, the root shell is obtained. This can be seen in Figure 7. below. The OTA package I created for task 3 can be found at `a0127051u/code/task3/ota/ota.zip`.
 
 ![](task3.1_root_shell.png)
 *Figure 7. The root shell obtained in task 3*
